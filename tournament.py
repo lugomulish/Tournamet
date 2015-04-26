@@ -15,7 +15,7 @@ def deleteMatches():
     """Remove all the match records from the database."""
     DB = connect()
     c = DB.cursor()
-    c.execute("TRUNCATE Matches CASCADE")
+    c.execute("TRUNCATE matches CASCADE")
     DB.commit()
     DB.close()
 
@@ -70,7 +70,7 @@ def playerStandings():
     """
     db = connect()
     c = db.cursor()
-    c.execute("SELECT players.id, players.name, (SELECT COUNT (*) FROM Matches WHERE Matches.winner = players.id) AS winner, (SELECT COUNT(*) FROM Matches where Matches.winner = players.id OR Matches.loser = players.id) AS matches FROM players LEFT JOIN Matches ON players.id = Matches.winner OR players.id = Matches.loser GROUP BY players.id ORDER BY winner DESC")
+    c.execute("SELECT * FROM playerStandings")
     results = c.fetchall()
     db.close()
     return results
@@ -85,12 +85,11 @@ def reportMatch(winner, loser):
     """
     db = connect()
     c = db.cursor()
-    c.execute("INSERT INTO Matches (winner, loser) VALUES (%s,%s)", (winner, loser,))
+    c.execute("INSERT INTO matches (winner, loser) VALUES (%s,%s)", (winner, loser,))
     db.commit()
     db.close()
 
 
-# I can't complete this function...
 def swissPairings():
     """Returns a list of pairs of players for the next round of a match.
   
@@ -106,7 +105,15 @@ def swissPairings():
         id2: the second player's unique id
         name2: the second player's name
     """
+    results = list()
+    playersList = playerStandings()
 
+    for index,player in enumerate(playersList):
+        if index % 2 == 0:
+            match = (playersList[index][0], playersList[index][1],
+                     playersList[index+1][0], playersList[index+1][1])
+            results.append(match)
+    return results
 
 
 
