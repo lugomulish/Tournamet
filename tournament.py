@@ -25,9 +25,43 @@ def deletePlayers():
     DB = connect()
     c = DB.cursor()
     c.execute("TRUNCATE players CASCADE")
+    c.execute("TRUNCATE tournaments CASCADE")
     DB.commit()
     DB.close()
 
+
+def registerTournament(name, description):
+    """Register a new tournament in the database."""
+    DB = connect()
+    c = DB.cursor()
+    c.execute("INSERT INTO tournaments (name, description) VALUES (%s,%s)", (name, description,))
+    DB.commit()
+    DB.close()
+
+def countTournaments():
+    """Returns the number of tournaments currently registered."""
+    db = connect()
+    c = db.cursor()
+    c.execute("SELECT COUNT(*) FROM tournaments")
+    count = c.fetchall()[0][0]
+    db.close()
+    return count
+
+def deleteAllTournaments():
+    """Remove all the tournaments records from the database."""
+    DB = connect()
+    c = DB.cursor()
+    c.execute("TRUNCATE tournaments CASCADE")
+    DB.commit()
+    DB.close()
+
+def deleteTournament(id):
+    """Remove all the tournaments records from the database."""
+    DB = connect()
+    c = DB.cursor()
+    c.execute("DELETE FROM tournaments WHERE id = (%s) CASCADE", (id,))
+    DB.commit()
+    DB.close()
 
 def countPlayers():
     """Returns the number of players currently registered."""

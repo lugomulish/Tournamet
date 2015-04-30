@@ -10,7 +10,8 @@ CREATE TABLE players ( name TEXT,
                      time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                      id SERIAL PRIMARY KEY);
 
-CREATE TABLE tournament ( name TEXT,
+CREATE TABLE tournaments ( name TEXT,
+                     description TEXT,
                      time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                      id SERIAL PRIMARY KEY);
 
