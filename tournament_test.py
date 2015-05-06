@@ -125,22 +125,22 @@ def testPairings():
     print "8. After one match, players with one win are paired."
 
 
-# def registerTournament_test():
-#     registerTournament("SuperTorneo","Torneo de Halo")
-#     c = countTournaments()
-#     if c != 1:
-#         raise ValueError(
-#             "After one tournament registers, countTournaments() should be 1.")
-#     print "4. After registering a tournament, countTournaments() returns 1."
-#
-# def deleteTournaments():
-#     registerTournament("SuperTorneo","Torneo de Halo")
-#     deleteTournaments()
-#     c = countTournaments()
-#     if c == 0:
-#         raise ValueError(
-#             "After one player registers, countTournaments() should be 0.")
-#     print "4. After registering a tournament, countTournaments() returns 0."
+def registerTournament_test():
+    registerTournament("SuperTorneo","Torneo de Halo")
+    c = countTournaments()
+    if c != 1:
+        raise ValueError(
+            "After one tournament registers, countTournaments() should be 1.")
+    print "9. After registering a tournament, countTournaments() returns 1."
+
+def deleteTournaments():
+    registerTournament("SuperTorneo","Torneo de Halo")
+    deleteAllTournaments()
+    c = countTournaments()
+    if c != 0:
+        raise ValueError(
+            "After one tournament registers, countTournaments() should be 0.")
+    print "10. After registering a tournament, countTournaments() returns 0."
 
 if __name__ == '__main__':
     testDeleteMatches()
@@ -151,9 +151,9 @@ if __name__ == '__main__':
     testStandingsBeforeMatches()
     testReportMatches()
     testPairings()
-    # registerTournament_test
-    # deleteTournaments()
+    registerTournament_test()
+    deleteTournaments()
 
-    # print "Success!  All tests pass!"
+    print "Success!  All tests pass!"
 
 
