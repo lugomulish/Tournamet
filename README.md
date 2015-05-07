@@ -63,3 +63,4 @@ And the 10 tests must be passed.
 
 
 [Psycopg]:http://initd.org/psycopg/
+[LikedIn]:https://www.linkedin.com/pub/rodolfo-edu-lugo-garcia/8a/b03/195
