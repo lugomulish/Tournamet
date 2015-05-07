@@ -14,7 +14,7 @@ for the course "Intro to Relational Databases".**
 Installs the following:
 
 - Python 2.7.6
-- Postgresql
+- Postgresql 9.3.6
 
 ### What's included
 
@@ -31,12 +31,29 @@ Tournament/
 ```
 
 ### Instrucctions
-To test all function we need go to create the Tournament database from "tournament.sql" and go to Command Line and use the next code:
 
+#####1.- Create the databases
+To create the database with all tables and views, we need go to Command Line to enter to psql using the following code:
+```sh
+$ psql
+```
+inside of the psql command line we need to use the following codes for create the databases with all tables and views
+```sh
+DROP DATABASE IF EXISTS tournament;
+CREATE DATABASE tournament;
+\c tournament
+\i tournament.sql
+```
+
+To test all function we need out from the psql command line with the following code:
+```sh
+\q
+```
+And for test all function we need use this code:
 ```sh
 $ python tournament_test.py
 ```
-and all tests must be passed.
+And the 10 tests must be passed.
 
 ### Author
 
