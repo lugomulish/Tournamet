@@ -30,7 +30,9 @@ def test_count():
 def test_register():
     delete_matches()
     delete_players()
-    register_player("Chandra Nalaar")
+    register_tournament("SuperTorneo", "Torneo de Halo")
+    tournament_id = get_last_tournament_id()
+    register_player("Chandra Nalaar", tournament_id)
     c = count_players()
     if c != 1:
         raise ValueError(
@@ -41,10 +43,12 @@ def test_register():
 def test_register_count_delete():
     delete_matches()
     delete_players()
-    register_player("Markov Chaney")
-    register_player("Joe Malik")
-    register_player("Mao Tsu-hsi")
-    register_player("Atlanta Hope")
+    register_tournament("SuperTorneo", "Torneo de Halo")
+    tournament_id = get_last_tournament_id()
+    register_player("Markov Chaney", tournament_id)
+    register_player("Joe Malik", tournament_id)
+    register_player("Mao Tsu-hsi", tournament_id)
+    register_player("Atlanta Hope", tournament_id)
     c = count_players()
     if c != 4:
         raise ValueError(
@@ -59,17 +63,20 @@ def test_register_count_delete():
 def test_standings_before_matches():
     delete_matches()
     delete_players()
-    register_player("Melpomene Murray")
-    register_player("Randy Schwartz")
-    standings = player_standings()
+    register_tournament("SuperTorneo", "Torneo de Halo")
+    tournament_id = get_last_tournament_id()
+    register_player("Melpomene Murray", tournament_id)
+    register_player("Randy Schwartz", tournament_id)
+    standings = player_standings(tournament_id)
     if len(standings) < 2:
         raise ValueError("Players should appear in playerStandings even before"
                          "they have played any matches.")
     elif len(standings) > 2:
         raise ValueError("Only registered players should appear in standings.")
-    if len(standings[0]) != 4:
+    if len(standings[0]) != 5:
         raise ValueError("Each playerStandings row should have four columns.")
-    [(id1, name1, wins1, matches1), (id2, name2, wins2, matches2)] = standings
+    [(tournament_id, id1, name1, wins1, matches1),
+     (tournament_id, id2, name2, wins2, matches2)] = standings
     if matches1 != 0 or matches2 != 0 or wins1 != 0 or wins2 != 0:
         raise ValueError(
             "Newly registered players should have no matches or wins.")
@@ -82,16 +89,18 @@ def test_standings_before_matches():
 def test_report_matches():
     delete_matches()
     delete_players()
-    register_player("Bruno Walton")
-    register_player("Boots O'Neal")
-    register_player("Cathy Burton")
-    register_player("Diane Grant")
-    standings = player_standings()
-    [id1, id2, id3, id4] = [row[0] for row in standings]
-    report_match(id1, id2)
-    report_match(id3, id4)
-    standings = player_standings()
-    for (i, n, w, m) in standings:
+    register_tournament("SuperTorneo", "Torneo de Halo")
+    tournament_id = get_last_tournament_id()
+    register_player("Bruno Walton", tournament_id)
+    register_player("Boots O'Neal", tournament_id)
+    register_player("Cathy Burton", tournament_id)
+    register_player("Diane Grant", tournament_id)
+    standings = player_standings(tournament_id)
+    [id1, id2, id3, id4] = [row[1] for row in standings]
+    report_match(id1, id2, tournament_id)
+    report_match(id3, id4, tournament_id)
+    standings = player_standings(tournament_id)
+    for (t, i, n, w, m) in standings:
         if m != 1:
             raise ValueError("Each player should have one match recorded.")
         if i in (id1, id3) and w != 1:
@@ -106,15 +115,17 @@ def test_report_matches():
 def test_pairings():
     delete_matches()
     delete_players()
-    register_player("Twilight Sparkle")
-    register_player("Fluttershy")
-    register_player("Applejack")
-    register_player("Pinkie Pie")
-    standings = player_standings()
-    [id1, id2, id3, id4] = [row[0] for row in standings]
-    report_match(id1, id2)
-    report_match(id3, id4)
-    pairings = swiss_pairings()
+    register_tournament("SuperTorneo", "Torneo de Halo")
+    tournament_id = get_last_tournament_id()
+    register_player("Twilight Sparkle", tournament_id)
+    register_player("Fluttershy", tournament_id)
+    register_player("Applejack", tournament_id)
+    register_player("Pinkie Pie", tournament_id)
+    standings = player_standings(tournament_id)
+    [id1, id2, id3, id4] = [row[1] for row in standings]
+    report_match(id1, id2, tournament_id)
+    report_match(id3, id4, tournament_id)
+    pairings = swiss_pairings(tournament_id)
     if len(pairings) != 2:
         raise ValueError(
             "For four players, swissPairings should return two pairs.")
@@ -128,6 +139,7 @@ def test_pairings():
 
 
 def test_register_tournament():
+    delete_all_tournaments()
     register_tournament("SuperTorneo", "Torneo de Halo")
     c = count_tournaments()
     if c != 1:
@@ -146,6 +158,49 @@ def test_delete_tournaments():
     print "10. After registering a tournament, countTournaments() returns 0."
 
 
+def test_count_players_from_tournament():
+    delete_matches()
+    delete_all_tournaments()
+    register_tournament("SuperTorneo", "Torneo de Halo")
+    tournament_id = get_last_tournament_id()
+    register_player("Twilight Sparkle", tournament_id)
+    register_player("Rodolfo Lugo", tournament_id)
+    register_player("Stephanie Cocom", tournament_id)
+    register_player("Angel Lugo", tournament_id)
+    c = count_players_from_tournament(tournament_id)
+    if c != 4:
+        raise ValueError("After registering, count_players_from_tournament()"
+                         " should return 4.")
+    print "11. After registering, count_players_from_tournament() returns 4."
+
+
+def test_delete_tournament():
+    delete_matches()
+    delete_all_tournaments()
+    register_tournament("SuperTorneo", "Torneo de Halo")
+    tournament_id = get_last_tournament_id()
+    delete_tournament(tournament_id)
+    c = count_tournaments()
+    if c != 0:
+        raise ValueError("After one tournament deleting, countTournaments()"
+                         " should be 0.")
+    print "12. After one tournament deleting, countTournaments() return 0."
+
+
+def test_delete_players_from_tournament():
+    delete_matches()
+    delete_players()
+    register_tournament("SuperTorneo", "Torneo de Halo")
+    tournament_id = get_last_tournament_id()
+    delete_players_from_tournament(tournament_id)
+    c = count_players_from_tournament(tournament_id)
+    if c != 0:
+        raise ValueError("After delete_players_from_tournament, "
+                         "count_players_from_tournament() should be 0.")
+    print "13. After delete_players_from_tournament, " \
+          "count_players_from_tournament() return 0."
+
+
 if __name__ == '__main__':
     test_delete_matches()
     test_delete()
@@ -157,5 +212,8 @@ if __name__ == '__main__':
     test_pairings()
     test_register_tournament()
     test_delete_tournaments()
+    test_count_players_from_tournament()
+    test_delete_tournament()
+    test_delete_players_from_tournament()
 
     print "Success!  All tests pass!"
